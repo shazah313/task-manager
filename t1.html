@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="container" ng-controller="TaskController">
+        <h1>Task Manager</h1>
+
+        <div class="add-task">
+            <input type="text" ng-model="newTask" placeholder="Enter task...">
+            <button ng-click="addTask()">Add Task</button>
+        </div>
+
+     
+        <section class="task-section pending">
+            <h2>Pending Tasks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="task in tasks | filter:{completed: false, inProgress: false}">
+                        <td>{{ task.name }}</td>
+                        <td>
+                            <button ng-click="editTask(task)">Edit</button>
+                            <button ng-click="deleteTask(task)">Delete</button>
+                            <button ng-click="startTask(task)">Start</button>
+                        </td>
+                    </tr>
+                    <tr ng-if="tasks.length === 0 || (tasks | filter:{completed: false, inProgress: false}).length === 0">
+                        <td colspan="2" class="empty-message">No pending tasks</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    
+        <section class="task-section ongoing">
+            <h2>Ongoing Tasks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="task in tasks | filter:{inProgress: true, completed: false}">
+                        <td>{{ task.name }}</td>
+                        <td>
+                            <button ng-click="editTask(task)">Edit</button>
+                            <button ng-click="deleteTask(task)">Delete</button>
+                            <button ng-click="completeTask(task)">Complete</button>
+                        </td>
+                    </tr>
+                    <tr ng-if="(tasks | filter:{inProgress: true, completed: false}).length === 0">
+                        <td colspan="2" class="empty-message">No ongoing tasks</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+ 
+        <section class="task-section completed">
+            <h2>Completed Tasks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="task in tasks | filter:{completed: true}">
+                        <td>{{ task.name }}</td>
+                        <td>
+                            <button ng-click="deleteTask(task)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr ng-if="(tasks | filter:{completed: true}).length === 0">
+                        <td colspan="2" class="empty-message">No completed tasks</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    
+        <div class="edit-task" ng-show="editingTask">
+            <label>Edit Task: </label>
+            <input type="text" ng-model="editedTaskName">
+            <button ng-click="saveTask()">Save</button>
+            <button ng-click="cancelEdit()">Cancel</button>
+        </div>
+
+       
+        <div class="chart-container">
+            <canvas id="taskPieChart"></canvas>
+        </div>
+    </div>
+</body>
+</html>
